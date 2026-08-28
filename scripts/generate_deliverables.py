@@ -3,6 +3,7 @@
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 TEMPLATE_SECTIONS = (
@@ -34,6 +35,7 @@ NARRATIVE_FIELDS = (
     "technical_implementation",
 )
 TABLE_FIELD_ALIASES = ("referenced_tables", "tables")
+TABLE_NAME_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*){0,2}$")
 
 
 def validate_input(data):
@@ -53,7 +55,7 @@ def validate_input(data):
             errors.append(f"'{field}' must be a non-empty string")
     present_table_fields = [field for field in TABLE_FIELD_ALIASES if field in data]
     if len(present_table_fields) > 1 and (
-        data["referenced_tables"] != data["tables"]
+        data.get("referenced_tables") != data.get("tables")
     ):
         errors.append(
             "'referenced_tables' and 'tables' cannot contain conflicting values"
@@ -65,8 +67,14 @@ def validate_input(data):
     )
     if not isinstance(tables, list) or not tables:
         errors.append("'referenced_tables' (or legacy 'tables') must be a non-empty list")
-    elif any(not isinstance(table, str) or not table.strip() for table in tables):
-        errors.append("'referenced_tables' entries must be non-empty strings")
+    elif any(
+        not isinstance(table, str) or not TABLE_NAME_PATTERN.fullmatch(table.strip())
+        for table in tables
+    ):
+        errors.append(
+            "'referenced_tables' entries must be dot-qualified identifiers containing "
+            "only letters, digits, and underscores"
+        )
     if errors:
         raise ValueError("; ".join(errors))
     return {

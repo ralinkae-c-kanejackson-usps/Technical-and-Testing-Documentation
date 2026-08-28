@@ -48,6 +48,12 @@ class GeneratorTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "conflicting"):
             generator.validate_input(data)
 
+    def test_rejects_unsafe_table_identifier(self):
+        data = dict(self.data)
+        data["referenced_tables"] = ["source.table`\\n```"]
+        with self.assertRaisesRegex(ValueError, "dot-qualified"):
+            generator.validate_input(data)
+
     def test_document_maps_template_and_enforces_parameterized_crid_filter(self):
         document = generator.technical_document(generator.validate_input(self.data))
         for section in generator.TEMPLATE_SECTIONS:
