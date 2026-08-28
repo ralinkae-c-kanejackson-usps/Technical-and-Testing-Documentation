@@ -1,0 +1,16 @@
+{
+  "business_justification": "The Postal Service has been offering promotions/incentives (postage price discounts) since 2012 to maintain/grow the value of mail by incentivizing mailers to adopt new technologies and techniques to drive mail innovation and effectiveness.  Over the years, the promotion/incentive programs have demonstrated that they maintain the value and effectiveness of mail.  Examples of the technologies/techniques mailers have been incentivized to adopt include but are not limited to: the integration of digital technology and physical mail; improving the quality and appeal of mail by using new print technology and techniques; and increasing personalization and better targeting for higher ROIs.  
+
+The general intent of all promotions is to increase the value of direct mail and retain the volumes of transactional mail thereby assuring long-term product growth. Analysis of past promotion participation has shown that mailers who participate in promotions have higher volume growth than non-participants.
+
+Predicting the success of the approved 2026 promotions, we are planning for the 2027 Promotion Calendar.",
+  "desired_outcome": [
+    "Increase participation volume",
+    "Attract new participants",
+    "Increase USPS revenue"
+  ],
+  "technical_implementation": "MuleSoft sends a CRID parameter to an API supported by a Databricks App. The service queries the referenced table and returns a JSON response containing only records where the table CRID equals the MuleSoft-provided CRID.",
+  "tables": [
+    "saldev.db_rpt.mailing_promotions_crid_high_account_t3"
+  ]
+}
