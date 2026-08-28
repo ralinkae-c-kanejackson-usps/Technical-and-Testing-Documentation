@@ -28,7 +28,11 @@ REQUIRED_FIELDS = (
     "technical_implementation",
     "referenced_tables",
 )
-NARRATIVE_FIELDS = REQUIRED_FIELDS[:-1]
+NARRATIVE_FIELDS = (
+    "business_justification",
+    "desired_outcome",
+    "technical_implementation",
+)
 
 
 def validate_input(data):

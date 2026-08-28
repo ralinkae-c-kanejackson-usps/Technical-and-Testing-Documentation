@@ -19,6 +19,11 @@ class GeneratorTests(unittest.TestCase):
         data["referenced_tables"] = []
         with self.assertRaisesRegex(ValueError, "referenced_tables"):
             generator.validate_input(data)
+        for field in generator.NARRATIVE_FIELDS:
+            data = dict(self.data)
+            data[field] = ""
+            with self.assertRaisesRegex(ValueError, field):
+                generator.validate_input(data)
 
     def test_document_maps_template_and_enforces_parameterized_crid_filter(self):
         document = generator.technical_document(generator.validate_input(self.data))
