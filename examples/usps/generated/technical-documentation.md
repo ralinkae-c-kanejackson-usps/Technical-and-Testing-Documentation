@@ -42,7 +42,7 @@ The contract for CRID type, case sensitivity, whitespace normalization, length, 
 
 ## 5. Data Model Overview (New Tables)
 | Table Name | Layer (Bronze/Source, Silver, Gold, Dashboard) | Purpose | Primary Key(s) | Workflow/Scheduled Job | Table Owner | Notes |
-| --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- |
 | None proposed | TBD | Read-only API response | TBD | TBD | TBD | No new tables supplied |
 
 ## 6. Detailed Table Specifications

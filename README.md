@@ -10,7 +10,7 @@ modify the Word document.
 Python 3.9+ and only the standard library are required.
 
 ```bash
-cd /home/runner/work/Technical-and-Testing-Documentation/Technical-and-Testing-Documentation
+# From the repository root:
 python scripts/generate_deliverables.py \
   --input examples/usps/input.json \
   --output /tmp/usps-deliverables

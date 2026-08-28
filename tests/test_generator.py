@@ -43,12 +43,10 @@ class GeneratorTests(unittest.TestCase):
             self.assertTrue((output / "technical-documentation.md").is_file())
             self.assertTrue((output / "test-plan.md").is_file())
 
-    def test_mocked_response_contract_prevents_cross_crid_leakage(self):
-        requested = "123"
-        response = [{"crid": "123"}, {"crid": "123"}]
-        self.assertTrue(all(record["crid"] == requested for record in response))
-        leaking_response = [{"crid": "123"}, {"crid": "456"}]
-        self.assertFalse(all(record["crid"] == requested for record in leaking_response))
+    def test_test_plan_includes_executable_crid_isolation_contract(self):
+        plan = generator.test_plan(generator.validate_input(self.data))
+        self.assertIn("Cross-CRID isolation", plan)
+        self.assertIn('all(record["crid"] == requested_crid for record in response_records)', plan)
 
 
 if __name__ == "__main__":

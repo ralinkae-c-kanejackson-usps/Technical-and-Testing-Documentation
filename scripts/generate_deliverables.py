@@ -28,6 +28,7 @@ REQUIRED_FIELDS = (
     "technical_implementation",
     "referenced_tables",
 )
+NARRATIVE_FIELDS = REQUIRED_FIELDS[:-1]
 
 
 def validate_input(data):
@@ -35,7 +36,7 @@ def validate_input(data):
     if not isinstance(data, dict):
         raise ValueError("Input must be a JSON object.")
     errors = []
-    for field in REQUIRED_FIELDS[:3]:
+    for field in NARRATIVE_FIELDS:
         if not isinstance(data.get(field), str) or not data[field].strip():
             errors.append(f"'{field}' must be a non-empty string")
     tables = data.get("referenced_tables")
@@ -102,7 +103,7 @@ The contract for CRID type, case sensitivity, whitespace normalization, length, 
 
 ## 5. Data Model Overview (New Tables)
 | Table Name | Layer (Bronze/Source, Silver, Gold, Dashboard) | Purpose | Primary Key(s) | Workflow/Scheduled Job | Table Owner | Notes |
-| --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- |
 | None proposed | TBD | Read-only API response | TBD | TBD | TBD | No new tables supplied |
 
 ## 6. Detailed Table Specifications
