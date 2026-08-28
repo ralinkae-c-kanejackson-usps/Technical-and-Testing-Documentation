@@ -50,6 +50,9 @@ to the repository and state its path. The agent will report validation errors
 instead of generating incomplete deliverables. The uploaded form may use `tables`
 instead of `referenced_tables`, and `desired_outcome` may be a non-empty list of
 strings.
+For compatibility with common form exports, literal line breaks in narrative
+strings are accepted even though strict JSON normally requires them to be
+escaped. Do not supply both table keys with different values.
 
 ## Layout
 

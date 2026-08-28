@@ -51,7 +51,14 @@ def validate_input(data):
                 )
         elif not isinstance(data.get(field), str) or not data[field].strip():
             errors.append(f"'{field}' must be a non-empty string")
-    tables = next((data[field] for field in TABLE_FIELD_ALIASES if field in data), None)
+    present_table_fields = [field for field in TABLE_FIELD_ALIASES if field in data]
+    if len(present_table_fields) > 1 and (
+        data["referenced_tables"] != data["tables"]
+    ):
+        errors.append(
+            "'referenced_tables' and 'tables' cannot contain conflicting values"
+        )
+    tables = data.get(present_table_fields[0]) if present_table_fields else None
     if not isinstance(tables, list) or not tables:
         errors.append("'referenced_tables' (or legacy 'tables') must be a non-empty list")
     elif any(not isinstance(table, str) or not table.strip() for table in tables):

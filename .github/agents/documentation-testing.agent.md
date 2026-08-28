@@ -31,6 +31,8 @@ The JSON keys are `business_justification`, `desired_outcome`,
 `technical_implementation`, and `referenced_tables`. For compatibility with an
 uploaded form, accept `tables` in place of `referenced_tables` and a non-empty
 list of outcome strings in place of a single `desired_outcome` string.
+The generator also accepts literal line breaks in an uploaded narrative string
+because common form exports may omit JSON escaping for line breaks.
 
 Treat `Technical Documentation Template Draft.docx` as authoritative. Inspect its
 Word structure (headings, tables, prompts, and styles) using a DOCX-aware tool;

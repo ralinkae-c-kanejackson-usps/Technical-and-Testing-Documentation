@@ -36,6 +36,18 @@ class GeneratorTests(unittest.TestCase):
             normalized["desired_outcome"], "Increase participation; Increase revenue"
         )
 
+    def test_rejects_empty_or_conflicting_table_aliases(self):
+        data = dict(self.data)
+        data.pop("referenced_tables")
+        data["tables"] = []
+        with self.assertRaisesRegex(ValueError, "tables"):
+            generator.validate_input(data)
+
+        data = dict(self.data)
+        data["tables"] = ["different.schema.table"]
+        with self.assertRaisesRegex(ValueError, "conflicting"):
+            generator.validate_input(data)
+
     def test_document_maps_template_and_enforces_parameterized_crid_filter(self):
         document = generator.technical_document(generator.validate_input(self.data))
         for section in generator.TEMPLATE_SECTIONS:
