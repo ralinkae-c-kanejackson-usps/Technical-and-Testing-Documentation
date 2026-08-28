@@ -70,11 +70,16 @@ def validate_input(data):
     if errors:
         raise ValueError("; ".join(errors))
     return {
-        "business_justification": data["business_justification"].strip(),
+        "business_justification": normalize_narrative(data["business_justification"]),
         "desired_outcome": normalize_outcome(data["desired_outcome"]),
-        "technical_implementation": data["technical_implementation"].strip(),
+        "technical_implementation": normalize_narrative(data["technical_implementation"]),
         "referenced_tables": [table.strip() for table in tables],
     }
+
+
+def normalize_narrative(value):
+    """Trim outer whitespace and trailing spaces from each narrative line."""
+    return "\n".join(line.rstrip() for line in value.strip().splitlines())
 
 
 def normalize_outcome(value):
