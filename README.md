@@ -13,7 +13,7 @@ Python 3.9+ and only the standard library are required.
 # From the repository root:
 python scripts/generate_deliverables.py \
   --input examples/usps/input.json \
-  --output /tmp/usps-deliverables
+  --output output/usps-deliverables
 ```
 
 This creates `technical-documentation.md` and `test-plan.md`.  The checked-in

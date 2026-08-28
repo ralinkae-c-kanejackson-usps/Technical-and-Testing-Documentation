@@ -19,7 +19,7 @@ TEMPLATE_SECTIONS = (
     "11. Consumption Guide",
     "12. Risks, Defects, Mitigations",
     "13. Testing & Deployment Summary",
-    "14.Document Change Log",
+    "14. Document Change Log",
 )
 
 REQUIRED_FIELDS = (
@@ -161,7 +161,7 @@ Primary consumer: MuleSoft (supplied). Approved use case: retrieve authorized, C
 ## 13. Testing & Deployment Summary
 Unit, integration, data, UAT, deployment version/date, rollback plan, environment promotion, and approvals are TBD. Execute the traceable scenarios in the companion test plan before deployment.
 
-## 14.Document Change Log
+## 14. Document Change Log
 | Date | Version | Change Description | Author | Reviewer/Approver |
 | --- | --- | --- | --- | --- |
 | TBD | TBD | Initial generated draft | TBD | TBD |
