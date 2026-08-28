@@ -39,10 +39,17 @@ be a non-empty list of non-empty strings. Unknown facts are rendered as
 ## Reusable Copilot agent
 
 In GitHub Copilot Chat, select the **Documentation and Testing Generator**
-custom agent in `.github/agents/documentation-testing.agent.md`, provide the
-same four categories, and ask it to run the generator. The agent uses the
-Word template as its required organization and updates or supplies the two
-deliverables. For deterministic, reviewable output, prefer the command above.
+custom agent in `.github/agents/documentation-testing.agent.md`. Attach your JSON
+file and say: **“Generate deliverables from this attached JSON file.”** The agent
+validates the attachment, runs the generator, and commits
+`deliverables/<your-file-name>/technical-documentation.md` and `test-plan.md` to
+its pull request. Review those files in GitHub; no local terminal is needed.
+
+If attachment upload is unavailable, paste the JSON in Copilot Chat or commit it
+to the repository and state its path. The agent will report validation errors
+instead of generating incomplete deliverables. The uploaded form may use `tables`
+instead of `referenced_tables`, and `desired_outcome` may be a non-empty list of
+strings.
 
 ## Layout
 

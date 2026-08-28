@@ -25,6 +25,17 @@ class GeneratorTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, field):
                 generator.validate_input(data)
 
+    def test_accepts_uploaded_form_aliases_and_outcome_list(self):
+        data = dict(self.data)
+        data.pop("referenced_tables")
+        data["tables"] = ["saldev.db_rpt.mailing_promotions_crid_high_account_t3"]
+        data["desired_outcome"] = ["Increase participation", "Increase revenue"]
+        normalized = generator.validate_input(data)
+        self.assertEqual(normalized["referenced_tables"], data["tables"])
+        self.assertEqual(
+            normalized["desired_outcome"], "Increase participation; Increase revenue"
+        )
+
     def test_document_maps_template_and_enforces_parameterized_crid_filter(self):
         document = generator.technical_document(generator.validate_input(self.data))
         for section in generator.TEMPLATE_SECTIONS:
@@ -47,6 +58,17 @@ class GeneratorTests(unittest.TestCase):
             output = Path(directory)
             self.assertTrue((output / "technical-documentation.md").is_file())
             self.assertTrue((output / "test-plan.md").is_file())
+
+    def test_cli_accepts_uploaded_form_fixture(self):
+        with tempfile.TemporaryDirectory() as directory:
+            result = subprocess.run(
+                [sys.executable, str(ROOT / "scripts/generate_deliverables.py"),
+                 "--input", str(ROOT / "examples/usps/mailing_promotion_input.json"),
+                 "--output", directory],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue((Path(directory) / "technical-documentation.md").is_file())
 
     def test_test_plan_includes_executable_crid_isolation_contract(self):
         plan = generator.test_plan(generator.validate_input(self.data))

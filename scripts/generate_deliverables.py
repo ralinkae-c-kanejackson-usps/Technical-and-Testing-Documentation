@@ -33,6 +33,7 @@ NARRATIVE_FIELDS = (
     "desired_outcome",
     "technical_implementation",
 )
+TABLE_FIELD_ALIASES = ("referenced_tables", "tables")
 
 
 def validate_input(data):
@@ -41,21 +42,41 @@ def validate_input(data):
         raise ValueError("Input must be a JSON object.")
     errors = []
     for field in NARRATIVE_FIELDS:
-        if not isinstance(data.get(field), str) or not data[field].strip():
+        if field == "desired_outcome":
+            try:
+                normalize_outcome(data.get(field))
+            except ValueError:
+                errors.append(
+                    "'desired_outcome' must be a non-empty string or list of non-empty strings"
+                )
+        elif not isinstance(data.get(field), str) or not data[field].strip():
             errors.append(f"'{field}' must be a non-empty string")
-    tables = data.get("referenced_tables")
+    tables = next((data[field] for field in TABLE_FIELD_ALIASES if field in data), None)
     if not isinstance(tables, list) or not tables:
-        errors.append("'referenced_tables' must be a non-empty list")
+        errors.append("'referenced_tables' (or legacy 'tables') must be a non-empty list")
     elif any(not isinstance(table, str) or not table.strip() for table in tables):
         errors.append("'referenced_tables' entries must be non-empty strings")
     if errors:
         raise ValueError("; ".join(errors))
     return {
         "business_justification": data["business_justification"].strip(),
-        "desired_outcome": data["desired_outcome"].strip(),
+        "desired_outcome": normalize_outcome(data["desired_outcome"]),
         "technical_implementation": data["technical_implementation"].strip(),
         "referenced_tables": [table.strip() for table in tables],
     }
+
+
+def normalize_outcome(value):
+    """Normalize a single outcome or an ordered list of outcomes to Markdown."""
+    if isinstance(value, str):
+        normalized = value.strip()
+        if normalized:
+            return normalized
+    if isinstance(value, list) and value and all(
+        isinstance(item, str) and item.strip() for item in value
+    ):
+        return "; ".join(item.strip() for item in value)
+    raise ValueError("'desired_outcome' must be a non-empty string or list of non-empty strings")
 
 
 def technical_document(data):
@@ -236,7 +257,7 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     try:
-        data = validate_input(json.loads(args.input.read_text(encoding="utf-8")))
+        data = validate_input(json.loads(args.input.read_text(encoding="utf-8"), strict=False))
     except (OSError, json.JSONDecodeError, ValueError) as error:
         parser.error(str(error))
     generate(data, args.output)
