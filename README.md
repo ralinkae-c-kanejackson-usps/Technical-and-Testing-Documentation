@@ -1,0 +1,64 @@
+# Documentation and Testing Generator
+
+This repository preserves `Technical Documentation Template Draft.docx` as the
+authoritative template.  The generator produces Markdown deliverables whose
+section order and table headings map directly to that template; it does not
+modify the Word document.
+
+## Quick start
+
+Python 3.9+ and only the standard library are required.
+
+```bash
+cd /home/runner/work/Technical-and-Testing-Documentation/Technical-and-Testing-Documentation
+python scripts/generate_deliverables.py \
+  --input examples/usps/input.json \
+  --output /tmp/usps-deliverables
+```
+
+This creates `technical-documentation.md` and `test-plan.md`.  The checked-in
+copies under `examples/usps/generated/` are the acceptance fixture.
+
+## Inputs
+
+Provide a JSON object with all four required categories:
+
+```json
+{
+  "business_justification": "Why the work is needed.",
+  "desired_outcome": "The measurable intended result.",
+  "technical_implementation": "Known implementation facts.",
+  "referenced_tables": ["catalog.schema.table_name"]
+}
+```
+
+Each narrative value must be a non-empty string and `referenced_tables` must
+be a non-empty list of non-empty strings. Unknown facts are rendered as
+`TBD` rather than invented.
+
+## Reusable Copilot agent
+
+In GitHub Copilot Chat, select the **Documentation and Testing Generator**
+custom agent in `.github/agents/documentation-testing.agent.md`, provide the
+same four categories, and ask it to run the generator. The agent uses the
+Word template as its required organization and updates or supplies the two
+deliverables. For deterministic, reviewable output, prefer the command above.
+
+## Layout
+
+* `Technical Documentation Template Draft.docx` — authoritative, unchanged
+  Word template.
+* `scripts/generate_deliverables.py` — deterministic generator and validation.
+* `examples/usps/input.json` — USPS CRID fixture.
+* `examples/usps/generated/` — generated technical documentation and test plan.
+* `tests/test_generator.py` — generator validation and output tests.
+
+## Security and extension
+
+Do not place credentials, production customer data, connection strings, or
+tokens in inputs or outputs. The generated SQL uses a named `:crid` bind
+parameter and explicit, schema-dependent column placeholders; replace those
+placeholders with approved columns only after schema review. Extend
+`TEMPLATE_SECTIONS` in the generator when the authoritative template changes,
+then update its tests and regenerate fixtures. Generated examples are
+illustrative, not production-ready API or database code.
