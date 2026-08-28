@@ -58,7 +58,11 @@ def validate_input(data):
         errors.append(
             "'referenced_tables' and 'tables' cannot contain conflicting values"
         )
-    tables = data.get(present_table_fields[0]) if present_table_fields else None
+    tables = (
+        data["referenced_tables"]
+        if "referenced_tables" in present_table_fields
+        else data.get("tables")
+    )
     if not isinstance(tables, list) or not tables:
         errors.append("'referenced_tables' (or legacy 'tables') must be a non-empty list")
     elif any(not isinstance(table, str) or not table.strip() for table in tables):
@@ -264,6 +268,7 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     try:
+        # Form-export attachments can contain literal narrative line breaks.
         data = validate_input(json.loads(args.input.read_text(encoding="utf-8"), strict=False))
     except (OSError, json.JSONDecodeError, ValueError) as error:
         parser.error(str(error))
